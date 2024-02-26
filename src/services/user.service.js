@@ -3,6 +3,11 @@ const httpStatus = require("http-status");
 const ApiError = require("../utils/ApiError");
 const bcrypt = require("bcryptjs");
 
+// For testing if api is working or not
+// async function getAllUsers() {
+//   // console.log(User.find({}));
+//   return await User.find({});
+// }
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserById(id)
 /**
  * Get User by id
@@ -10,6 +15,22 @@ const bcrypt = require("bcryptjs");
  * @param {String} id
  * @returns {Promise<User>}
  */
+async function getUserById(userId) {
+  try {
+    const data = await User.findById(userId);
+
+    if (!data) {
+      throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+    }
+
+    return data;
+  } catch (error) {
+    if (error.name === 'CastError' && error.kind === 'ObjectId') {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid userId format');
+    }
+    throw error; // Rethrow other errors
+  }
+}
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUserByEmail(email)
 /**
@@ -18,7 +39,16 @@ const bcrypt = require("bcryptjs");
  * @param {string} email
  * @returns {Promise<User>}
  */
-
+async function getUserByEmail(email) {
+  const data = await User.findOne(email);
+  if (!data) {
+    throw new ApiError(
+      httpStatus.BAD_REQUEST,
+      '""email"" must be a present before'
+    );
+  }
+  return data;
+}
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement createUser(user)
 /**
  * Create a user
@@ -41,5 +71,24 @@ const bcrypt = require("bcryptjs");
  *
  * 200 status code on duplicate email - https://stackoverflow.com/a/53144807
  */
+const getAllUsers = async()=>{
+  const data = await User.find({});
+  return data;
+}
 
+async function createUser(user) {
+  const { email } = user;
 
+  if (await User.isEmailTaken(email)) {
+    throw new ApiError(400, "Email is already taken.");
+  }
+
+  return await User.create(user);
+}
+
+module.exports = {
+  getUserById,
+  getUserByEmail,
+  createUser,
+  getAllUsers,
+};
