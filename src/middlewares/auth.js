@@ -12,7 +12,13 @@ const ApiError = require("../utils/ApiError");
  * --- set the `req.user` property as the user object corresponding to the authenticated token
  * --- resolve the promise
  */
-const verifyCallback = (req, resolve, reject) => async (err, user, info) => {
+ const verifyCallback = (req, resolve, reject) => async (err, user, info) => {
+  // console.log(user);
+  if (err || info || !user) {
+    reject( new ApiError(httpStatus.UNAUTHORIZED, "Please authenticate"));
+  }
+  req.user = user;
+  resolve();
 };
 
 /**

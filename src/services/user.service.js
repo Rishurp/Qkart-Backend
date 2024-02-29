@@ -20,13 +20,13 @@ async function getUserById(userId) {
     const data = await User.findById(userId);
 
     if (!data) {
-      throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+      throw new ApiError(httpStatus.NOT_FOUND, "User not found");
     }
 
     return data;
   } catch (error) {
-    if (error.name === 'CastError' && error.kind === 'ObjectId') {
-      throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid userId format');
+    if (error.name === "CastError" && error.kind === "ObjectId") {
+      throw new ApiError(httpStatus.BAD_REQUEST, "Invalid userId format");
     }
     throw error; // Rethrow other errors
   }
@@ -40,7 +40,9 @@ async function getUserById(userId) {
  * @returns {Promise<User>}
  */
 async function getUserByEmail(email) {
-  const data = await User.findOne(email);
+
+  const data = await User.findOne({ email });
+  console.log(data);
   if (!data) {
     throw new ApiError(
       httpStatus.BAD_REQUEST,
@@ -71,19 +73,28 @@ async function getUserByEmail(email) {
  *
  * 200 status code on duplicate email - https://stackoverflow.com/a/53144807
  */
-const getAllUsers = async()=>{
+const getAllUsers = async () => {
   const data = await User.find({});
   return data;
-}
+};
+
+const encryptPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(password, salt);
+  return hashPassword;
+};
 
 async function createUser(user) {
-  const { email } = user;
+  const { email, password } = user;
 
-  if (await User.isEmailTaken(email)) {
-    throw new ApiError(400, "Email is already taken.");
-  }
-
-  return await User.create(user);
+  const isExist = await User.isEmailTaken(email);
+    if (isExist) {
+        throw new ApiError(httpStatus.OK, "Email already taken");
+    }
+  const hashPassword = await encryptPassword(password);
+  const res = { ...user, password: hashPassword };
+  // console.log(res);
+  return await User.create(res);
 }
 
 module.exports = {

@@ -3,7 +3,6 @@ const ApiError = require("../utils/ApiError");
 const catchAsync = require("../utils/catchAsync");
 const { userService } = require("../services");
 
-
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Implement getUser() function
 /**
  * Get user details
@@ -12,10 +11,10 @@ const { userService } = require("../services");
  *  - Return the whole user object fetched from Mongo
 
  *  - If data exists for the provided "userId", return 200 status code and the object
- *  - If data doesn't exist, throw an error using `ApiError` class
+ *  - If data doesn't exist, throw an error using ApiError class
  *    - Status code should be "404 NOT FOUND"
  *    - Error message, "User not found"
- *  - If the user whose token is provided and user whose data to be fetched don't match, throw `ApiError`
+ *  - If the user whose token is provided and user whose data to be fetched don't match, throw ApiError
  *    - Status code should be "403 FORBIDDEN"
  *    - Error message, "User not found"
  *
@@ -43,17 +42,28 @@ const { userService } = require("../services");
  * @returns {User | {address: String}}
  *
  */
-const getUser = catchAsync(async (req, res) => {
-  // console.log(req.params);
+ const getUser = catchAsync(async (req, res) => {
+  const tokenArr = req.headers["authorization"].split(" ");
+  const token = tokenArr[1];
+
+  if (!token) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized");
+  }
+
+  // Now, use the token for authentication (e.g., verify the token using your authentication logic)
+
   const { userId } = req.params;
-  // return res.json({ message: "good" });
   const data = await userService.getUserById(userId);
-  // console.log(data);
+  if(req.user._id != userId){
+    throw new ApiError(httpStatus.FORBIDDEN, "Your not authorized");
+  }
   if (!data) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found");
   }
+
   return res.status(httpStatus.OK).json(data);
 });
+
 
 const getAll = catchAsync(async (req, res) => {
   
@@ -65,5 +75,5 @@ const getAll = catchAsync(async (req, res) => {
 });
 module.exports = {
   getUser,
-  getAll,
+   getAll,
 };

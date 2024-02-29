@@ -16,6 +16,6 @@ mongoose.connect(config.mongoose.url,{
     });
 }).catch((err)=>{
     console.log(err);
-})
+});
 
 
