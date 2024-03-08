@@ -33,6 +33,7 @@ const { authService, userService, tokenService } = require("../services");
  */
 const register = catchAsync(async (req, res) => {
   try {
+    console.log(req.body);
     const result = req.body;
     const user = await userService.createUser(result);
     const tokens = await tokenService.generateAuthTokens(user);
