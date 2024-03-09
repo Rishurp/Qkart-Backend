@@ -85,6 +85,22 @@ const updateProductInCart = catchAsync(async (req, res) => {
     );
     return res.status(httpStatus.NO_CONTENT).send(cart);
   }
+/**
+ * Update product quantity in cart
+ * - If updated quantity > 0, 
+ * --- update product quantity in user's cart
+ * --- return "200 OK" and the updated cart object
+ * - If updated quantity == 0, 
+ * --- delete the product from user's cart
+ * --- return "204 NO CONTENT"
+ * 
+ * Example responses:
+ * HTTP 200 - on successful update
+ * HTTP 204 - on successful product deletion
+ * 
+ *
+ */
+const updateProductInCart = catchAsync(async (req, res) => {
 });
 
 /**
