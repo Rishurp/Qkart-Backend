@@ -28,7 +28,7 @@ const { cartService } = require("../services");
  *  "paymentOption": "PAYMENT_OPTION_DEFAULT",
  *  "__v": 33
  * }
- * 
+ *
  *
  */
 const getCart = catchAsync(async (req, res) => {
@@ -42,7 +42,7 @@ const getCart = catchAsync(async (req, res) => {
  *
  */
 const addProductToCart = catchAsync(async (req, res) => {
-  console.log(req.user, "Inside addProduct");
+  // console.log(req.user, "Inside addProduct");
   const cart = await cartService.addProductToCart(
     req.user,
     req.body.productId,
@@ -55,41 +55,50 @@ const addProductToCart = catchAsync(async (req, res) => {
 // TODO: CRIO_TASK_MODULE_CART - Implement updateProductInCart()
 /**
  * Update product quantity in cart
- * - If updated quantity > 0, 
+ * - If updated quantity > 0,
  * --- update product quantity in user's cart
  * --- return "200 OK" and the updated cart object
- * - If updated quantity == 0, 
+ * - If updated quantity == 0,
  * --- delete the product from user's cart
  * --- return "204 NO CONTENT"
- * 
+ *
  * Example responses:
  * HTTP 200 - on successful update
  * HTTP 204 - on successful product deletion
- * 
+ *
  *
  */
 const updateProductInCart = catchAsync(async (req, res) => {
-  if(req.body.quantity > 0){
+  if (req.body.quantity > 0) {
     const cart = await cartService.updateProductInCart(
-      req.user, 
-      req.body.productId, 
+      req.user,
+      req.body.productId,
       req.body.quantity
-      );
-      console.log(cart);
-      return res.status(httpStatus.OK).send(cart);
+    );
+    // console.log(cart);
+    return res.status(httpStatus.OK).send(cart);
   }
-  if(req.body.quantity === 0){
+  if (req.body.quantity === 0) {
     const cart = await cartService.deleteProductFromCart(
       req.user,
       req.body.productId
-      );
-      return res.status(httpStatus.NO_CONTENT).send(cart);
+    );
+    return res.status(httpStatus.NO_CONTENT).send(cart);
   }
 });
 
+/**
+ * Checkout user's cart
+ */
+const checkout = catchAsync(async (req, res) => {
+  // console.log(req.user);
+  await cartService.checkout(req.user);
+  return res.status(204).send();
+});
 
 module.exports = {
   getCart,
   addProductToCart,
   updateProductInCart,
+  checkout,
 };

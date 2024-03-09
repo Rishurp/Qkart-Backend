@@ -83,7 +83,7 @@ async function createUser(user) {
  */
 const getUserAddressById = async (id, q) => {
   const user = await User.findOne({ _id: id }, { address: 1, email: 1 });
-  console.log(q);
+  // console.log(q);
   if (q) {
     return { address: user.address };
   }
@@ -107,7 +107,8 @@ async function setAddress(userId, address) {
   }
   const user = await User.findById(userId);
   user.address = address;
-
+  // user.save();
+  // console.log(user, "inside setAddress");
   return user.address;
 }
 module.exports = {

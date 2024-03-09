@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 // NOTE - "validator" external library and not the custom middleware at src/middlewares/validate.js
 const validator = require("validator");
 const config = require("../config/config");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 
 // TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS - Complete userSchema, a Mongoose schema for "users" collection
 const userSchema = mongoose.Schema(
@@ -45,7 +45,7 @@ const userSchema = mongoose.Schema(
       type: String,
       default: config.default_address,
       trim: false,
-      default: "ADDRESS_NOT_SET"
+      default: "ADDRESS_NOT_SET",
     },
   },
   // Create createdAt and updatedAt fields automatically
@@ -64,11 +64,30 @@ userSchema.statics.isEmailTaken = async function (email) {
   const user = await this.findOne({ email });
   return !!user;
 };
+
+// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS
+
+/**
+ * Check if entered password matches the user's password
+ * @param {string} password
+ * @returns {Promise<boolean>}
+ */
 userSchema.methods.isPasswordMatch = async function (password) {
   return bcrypt.compare(password, this.password);
 };
 
-// TODO: CRIO_TASK_MODULE_UNDERSTANDING_BASICS
+
+/**
+ * Check if user have set an address other than the default address
+ * - should return true if user has set an address other than default address
+ * - should return false if user's address is the default address
+ *
+ * @returns {Promise<boolean>}
+ */
+userSchema.methods.hasSetNonDefaultAddress = async function () {
+   return this.address !== config.default_address;
+};
+
 /*
  * Create a Mongoose model out of userSchema and export the model as "User"
  * Note: The model should be accessible in a different module when imported like below
@@ -78,7 +97,4 @@ userSchema.methods.isPasswordMatch = async function (password) {
  * @typedef User
  */
 const User = mongoose.model("User", userSchema);
-module.exports.User = User;  
-
-
-
+module.exports.User = User;

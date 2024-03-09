@@ -5,10 +5,10 @@ const { tokenTypes } = require("../config/tokens");
 /**
  * Generate jwt token
  * - Payload must contain fields
- * --- "sub": `userId` parameter
- * --- "type": `type` parameter
+ * --- "sub": userId parameter
+ * --- "type": type parameter
  *
- * - Token expiration must be set to the value of `expires` parameter
+ * - Token expiration must be set to the value of expires parameter
  *
  * @param {ObjectId} userId - Mongo user id
  * @param {Number} expires - Token expiration time in seconds since unix epoch
@@ -17,7 +17,6 @@ const { tokenTypes } = require("../config/tokens");
  * @returns {string}
  */
 const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
-
   const payload = {
     sub: userId,
     iat: Math.floor(Date.now() / 1000),
@@ -26,7 +25,9 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
   };
   const token = jwt.sign(payload, secret);
   return token;
+};
 
+/**
 };
 
 /**
@@ -45,7 +46,6 @@ const generateToken = (userId, expires, type, secret = config.jwt.secret) => {
  * }
  */
 const generateAuthTokens = async (user) => {
-
   const accessTokenExpires =
     Math.floor(Date.now() / 1000) + config.jwt.accessExpirationMinutes * 60;
   const token = generateToken(user._id, accessTokenExpires, tokenTypes.ACCESS);
@@ -56,7 +56,6 @@ const generateAuthTokens = async (user) => {
       expires: new Date(accessTokenExpires * 1000),
     },
   };
-
 };
 
 module.exports = {
