@@ -23,25 +23,25 @@ The backend for the QKART e-commerce web application. This backend provides a RE
 ## API Endpoints
 
 ### Authentication
-- `POST /api/auth/register`: Register a new user.
-- `POST /api/auth/login`: Log in an existing user.
-- `POST /api/auth/logout`: Log out the current user.
+- `POST /api/v1/auth/register`: Register a new user.
+- `POST /api/v1/auth/login`: Log in an existing user.
+- `POST /api/v1/auth/logout`: Log out the current user.
 
 ### Products
-- `GET /api/products`: Retrieve all products.
-- `GET /api/products/:id`: Retrieve details of a specific product.
-- `POST /api/products`: Add a new product (admin only).
-- `PUT /api/products/:id`: Update an existing product (admin only).
-- `DELETE /api/products/:id`: Delete a product (admin only).
+- `GET /api/v1/products`: Retrieve all products.
+- `GET /api/v1/products/:id`: Retrieve details of a specific product.
+- `POST /api/v1/products`: Add a new product (admin only).
+- `PUT /api/v1/products/:id`: Update an existing product (admin only).
+- `DELETE /api/v1/products/:id`: Delete a product (admin only).
 
 ### Cart
-- `GET /api/cart`: Get the current user's cart.
-- `POST /api/cart`: Add an item to the cart.
-- `PUT /api/cart/:itemId`: Update an item in the cart.
-- `DELETE /api/cart/:itemId`: Remove an item from the cart.
+- `GET /api/v1/cart`: Get the current user's cart.
+- `POST /api/v1/cart`: Add an item to the cart.
+- `PUT /api/v1/cart/:itemId`: Update an item in the cart.
+- `DELETE /api/v1/cart/:itemId`: Remove an item from the cart.
 
-### Orders
-- `POST /api/orders`: Create a new order.
+### Checkout
+- `POST /api/v1/checkout`: For checkout.
 
 ## Installation
 
